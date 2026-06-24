@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A dark and pastel pink withholding tax calculator web project for portfolio use." />
+  <title>Pastel TaxDesk | Withholding Tax Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="hero glass-card">
+      <nav class="topbar" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="Pastel TaxDesk home">
+          <span class="brand-mark">₱</span>
+          <span>
+            <strong>Pastel TaxDesk</strong>
+            <small>Withholding tax calculator</small>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="#calculator">Calculator</a>
+          <a href="#tax-table">Tax Table</a>
+          <a href="#history">History</a>
+        </div>
+      </nav>
+
+      <section class="hero-grid" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">Dark × Pastel Pink Portfolio Project</p>
+          <h1>Calculate estimated Philippine withholding tax with a polished web app.</h1>
+          <p class="hero-text">
+            Inspired by official tax calculator workflows, redesigned with a modern dashboard layout,
+            clean calculation breakdown, responsive cards, and client-side JavaScript only.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#calculator">Start calculating</a>
+            <button class="btn ghost" id="loadSampleBtn" type="button">Load sample data</button>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Project highlights">
+          <div>
+            <span class="mini-label">Current mode</span>
+            <strong id="heroMode">Compensation</strong>
+          </div>
+          <div>
+            <span class="mini-label">Theme</span>
+            <strong>Dark + Pastel Pink</strong>
+          </div>
+          <div>
+            <span class="mini-label">Stack</span>
+            <strong>HTML • CSS • JS</strong>
+          </div>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section class="tabs glass-card" aria-label="Calculator mode selection">
+        <button class="tab active" type="button" data-mode="compensation">Compensation W-Tax</button>
+        <button class="tab" type="button" data-mode="expanded">Expanded W-Tax</button>
+      </section>
+
+      <section class="calculator-grid" id="calculator">
+        <form class="input-card glass-card" id="taxForm">
+          <div class="section-heading">
+            <p class="eyebrow">Input details</p>
+            <h2 id="formTitle">Compensation withholding tax</h2>
+            <p id="formHelp">Enter the taxable payroll components for one pay period.</p>
+          </div>
+
+          <div class="mode-panel active" id="compensationPanel">
+            <label class="field">
+              <span>Payroll period</span>
+              <select id="payPeriod">
+                <option value="monthly">Monthly</option>
+                <option value="semiMonthly">Semi-monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="daily">Daily</option>
+              </select>
+            </label>
+
+            <div class="two-col">
+              <label class="field">
+                <span>Basic pay</span>
+                <input id="basicPay" type="number" min="0" step="0.01" placeholder="0.00" />
+              </label>
+              <label class="field">
+                <span>Overtime / premium pay</span>
+                <input id="overtimePay" type="number" min="0" step="0.01" placeholder="0.00" />
+              </label>
+            </div>
+
+            <div class="two-col">
+              <label class="field">
+                <span>Taxable allowances</span>
+                <input id="allowances" type="number" min="0" step="0.01" placeholder="0.00" />
+              </label>
+              <label class="field">
+                <span>Taxable bonuses / benefits</span>
+                <input id="taxableBenefits" type="number" min="0" step="0.01" placeholder="0.00" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Less: employee premiums / non-taxable deductions</span>
+              <input id="deductions" type="number" min="0" step="0.01" placeholder="0.00" />
+            </label>
+
+            <div class="notice">
+              <strong>Tip:</strong> For bonuses and benefits, enter only the taxable portion. This portfolio app estimates tax and does not replace payroll or BIR filing advice.
+            </div>
+          </div>
+
+          <div class="mode-panel" id="expandedPanel">
+            <label class="field">
+              <span>Income payment / invoice amount</span>
+              <input id="paymentAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+            </label>
+
+            <div class="two-col">
+              <label class="field">
+                <span>Withholding rate</span>
+                <select id="ewtRate">
+                  <option value="0.01">1%</option>
+                  <option value="0.02" selected>2%</option>
+                  <option value="0.05">5%</option>
+                  <option value="0.10">10%</option>
+                  <option value="0.15">15%</option>
+                  <option value="0.20">20%</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </label>
+              <label class="field hidden" id="customRateField">
+                <span>Custom rate (%)</span>
+                <input id="customRate" type="number" min="0" max="100" step="0.01" placeholder="2.00" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span>Transaction label</span>
+              <input id="transactionLabel" type="text" maxlength="60" placeholder="Example: Professional service fee" />
+            </label>
+
+            <div class="notice">
+              <strong>Reminder:</strong> Expanded withholding tax rates depend on the income type and taxpayer classification. Verify the correct rate before using the result.
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn primary" type="submit">Compute tax</button>
+            <button class="btn soft" id="resetBtn" type="button">Reset</button>
+          </div>
+        </form>
+
+        <aside class="result-card glass-card" aria-live="polite">
+          <div class="section-heading compact">
+            <p class="eyebrow">Results</p>
+            <h2>Estimated withholding</h2>
+          </div>
+
+          <div class="result-total">
+            <span>Tax to withhold</span>
+            <strong id="taxResult">₱0.00</strong>
+          </div>
+
+          <div class="summary-list" id="summaryList">
+            <div><span>Taxable base</span><strong>₱0.00</strong></div>
+            <div><span>Tax bracket / rate</span><strong>—</strong></div>
+            <div><span>Estimated net after withholding</span><strong>₱0.00</strong></div>
+          </div>
+
+          <div class="breakdown" id="breakdownBox">
+            <h3>Computation breakdown</h3>
+            <p>Enter values and click <strong>Compute tax</strong> to view the formula.</p>
+          </div>
+
+          <div class="button-row stacked-mobile">
+            <button class="btn soft" id="copyBtn" type="button">Copy result</button>
+            <button class="btn ghost" id="saveBtn" type="button">Save scenario</button>
+          </div>
+        </aside>
+      </section>
+
+      <section class="table-card glass-card" id="tax-table">
+        <div class="section-heading">
+          <p class="eyebrow">Reference table</p>
+          <h2>Compensation withholding table used by the app</h2>
+          <p>Effective January 1, 2023 onwards. Values are included in JavaScript so the app works offline.</p>
+        </div>
+        <div class="table-controls">
+          <label class="field small-field">
+            <span>Show period</span>
+            <select id="tablePeriod">
+              <option value="monthly">Monthly</option>
+              <option value="semiMonthly">Semi-monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </label>
+        </div>
+        <div class="responsive-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Bracket</th>
+                <th>Compensation range</th>
+                <th>Base tax</th>
+                <th>Rate</th>
+                <th>Excess over</th>
+              </tr>
+            </thead>
+            <tbody id="taxTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="history-card glass-card" id="history">
+        <div class="section-heading">
+          <p class="eyebrow">Local history</p>
+          <h2>Saved scenarios</h2>
+          <p>Saved only in your browser using localStorage. This is useful for portfolio demo testing.</p>
+        </div>
+        <div id="historyList" class="history-list empty-state">No saved scenarios yet.</div>
+        <div class="button-row">
+          <button class="btn soft" id="clearHistoryBtn" type="button">Clear history</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Pastel TaxDesk is a student/portfolio project. It is not an official BIR system.</p>
+      <p>Built with semantic HTML, responsive CSS, and vanilla JavaScript.</p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
