@@ -101,10 +101,11 @@ a {
 }
 
 .glass-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+  /* Removed glass effect so cards blend with page background */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
 }
 
 .hero {
@@ -121,6 +122,8 @@ a {
   background: radial-gradient(circle, rgba(255, 158, 207, 0.36), transparent 60%);
   pointer-events: none;
 }
+
+/* previously removed hero card override — keep hero's glass effect */
 
 .topbar,
 .hero-grid,
@@ -154,19 +157,6 @@ body.theme-light .topbar {
   align-items: center;
   gap: 12px;
 }
-
-.brand-link-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--pink-soft);
-  font-size: 0.95rem;
-}
-
 .brand-mark {
   display: grid;
   place-items: center;
