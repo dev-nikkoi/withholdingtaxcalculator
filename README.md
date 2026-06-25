@@ -1,7 +1,4 @@
-# Pastel TaxDesk — Withholding Tax Calculator
-
-A dark and pastel pink web development project inspired by online withholding tax calculator workflows. It is built with **HTML, CSS, and vanilla JavaScript** only, so it is easy to deploy as a static website.
-
+#  Withholding Tax Calculator
 ## Features
 
 - Compensation withholding tax calculator
