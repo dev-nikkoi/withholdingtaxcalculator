@@ -3,35 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A dark and pastel pink withholding tax calculator web project for portfolio use." />
-  <title>Pastel TaxDesk | Withholding Tax Calculator</title>
+  <meta name="description" content="Withholding Tax Calculator" />
+  <title>TaxDesk-Nikkoi | Withholding Tax Calculator</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="theme-dark">
   <div class="site-shell">
     <header class="hero glass-card">
       <nav class="topbar" aria-label="Main navigation">
-        <a class="brand" href="#top" aria-label="Pastel TaxDesk home">
+        <a class="brand" href="#top" aria-label="TaxDesk-Nikkoi home">
           <span class="brand-mark">₱</span>
+          <span class="brand-link-icon" aria-hidden="true">🔗</span>
           <span>
-            <strong>Pastel TaxDesk</strong>
+            <strong>TaxDesk-Nikkoi</strong>
             <small>Withholding tax calculator</small>
           </span>
         </a>
-        <div class="nav-links">
-          <a href="#calculator">Calculator</a>
-          <a href="#tax-table">Tax Table</a>
-          <a href="#history">History</a>
+        <div class="nav-tools">
+          <div class="nav-links">
+            <a href="#calculator">Calculator</a>
+            <a href="#tax-table">Tax Table</a>
+            <a href="#history">History</a>
+          </div>
+          <button class="btn soft theme-toggle-btn" id="themeToggleBtn" type="button" aria-pressed="false">Light pastel</button>
         </div>
       </nav>
 
       <section class="hero-grid" id="top">
         <div class="hero-copy">
-          <p class="eyebrow">Dark × Pastel Pink Portfolio Project</p>
-          <h1>Calculate estimated Philippine withholding tax with a polished web app.</h1>
+          <p class="eyebrow">Portfolio Project</p>
+          <h1>Calculate estimated Philippine withholding tax.</h1>
           <p class="hero-text">
-            Inspired by official tax calculator workflows, redesigned with a modern dashboard layout,
-            clean calculation breakdown, responsive cards, and client-side JavaScript only.
+            Redesigned specifically for withholding tax computation,
+            this modern dashboard provides a clear tax breakdown, and responsive card-based layout.
           </p>
           <div class="hero-actions">
             <a class="btn primary" href="#calculator">Start calculating</a>
@@ -45,7 +49,7 @@
           </div>
           <div>
             <span class="mini-label">Theme</span>
-            <strong>Dark + Pastel Pink</strong>
+            <strong id="heroTheme">Dark + Pastel Pink</strong>
           </div>
           <div>
             <span class="mini-label">Stack</span>
@@ -176,8 +180,10 @@
           </div>
 
           <div class="button-row stacked-mobile">
-            <button class="btn soft" id="copyBtn" type="button">Copy result</button>
-            <button class="btn ghost" id="saveBtn" type="button">Save scenario</button>
+            <button class="btn soft" id="copyBtn" type="button"><span class="btn-icon">📋</span>Copy result</button>
+            <button class="btn soft" id="exportCsvBtn" type="button"><span class="btn-icon">📄</span>Export CSV</button>
+            <button class="btn soft" id="exportPdfBtn" type="button"><span class="btn-icon">🖨️</span>Export PDF</button>
+            <button class="btn ghost" id="saveBtn" type="button"><span class="btn-icon">💾</span>Save scenario</button>
           </div>
         </aside>
       </section>
@@ -186,7 +192,7 @@
         <div class="section-heading">
           <p class="eyebrow">Reference table</p>
           <h2>Compensation withholding table used by the app</h2>
-          <p>Effective January 1, 2023 onwards. Values are included in JavaScript so the app works offline.</p>
+          <p>Effective January 1, 2023 onwards.</p>
         </div>
         <div class="table-controls">
           <label class="field small-field">
@@ -229,8 +235,8 @@
     </main>
 
     <footer class="footer">
-      <p>Pastel TaxDesk is a student/portfolio project. It is not an official BIR system.</p>
-      <p>Built with semantic HTML, responsive CSS, and vanilla JavaScript.</p>
+      <p>TaxDesk-Nikkoi is a student/portfolio project. It is not an official BIR system.</p>
+      <p>Built with HTML, CSS, and JavaScript.</p>
     </footer>
   </div>
 

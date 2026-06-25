@@ -53,6 +53,7 @@ const elements = {
     expanded: document.querySelector('#expandedPanel'),
   },
   heroMode: document.querySelector('#heroMode'),
+  themeToggleBtn: document.querySelector('#themeToggleBtn'),
   formTitle: document.querySelector('#formTitle'),
   formHelp: document.querySelector('#formHelp'),
   taxResult: document.querySelector('#taxResult'),
@@ -229,6 +230,103 @@ function showToast(message) {
   setTimeout(() => elements.toast.classList.remove('show'), 2400);
 }
 
+function buildExportRows(result) {
+  const rows = [
+    ['Mode', result.mode],
+    ['Title', result.title],
+    ['Taxable base', pesos(result.taxableBase)],
+    ['Tax withheld', pesos(result.tax)],
+    ['Net amount', pesos(result.net)],
+    ['Timestamp', new Date(result.timestamp).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' })],
+  ];
+
+  if (result.details?.rate != null) {
+    rows.splice(3, 0, ['Withholding rate', percent(result.details.rate)]);
+  }
+
+  if (result.details?.tableLabel) {
+    rows.splice(3, 0, ['Tax table', result.details.tableLabel]);
+  }
+
+  if (result.details?.bracket?.range) {
+    rows.splice(4, 0, ['Bracket range', result.details.bracket.range]);
+  }
+
+  if (result.details?.label) {
+    rows.splice(1, 0, ['Transaction', result.details.label]);
+  }
+
+  return rows;
+}
+
+function exportToCsv() {
+  if (!latestResult) {
+    showToast('Compute a result first to export.');
+    return;
+  }
+
+  const rows = buildExportRows(latestResult);
+  const csvContent = rows
+    .map(([label, value]) => `"${label.replace(/"/g, '""')}","${String(value).replace(/"/g, '""')}"`)
+    .join('\r\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const filename = `withholding-calculation-${new Date().toISOString().slice(0, 10)}.csv`;
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  showToast('Calculation exported as CSV.');
+}
+
+function exportToPdf() {
+  if (!latestResult) {
+    showToast('Compute a result first to export.');
+    return;
+  }
+
+  const rows = buildExportRows(latestResult);
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Withholding Calculation</title>
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; margin: 32px; color: #3d1f38; }
+    h1 { margin-bottom: 16px; color: #b44b8a; }
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    th, td { padding: 12px 14px; border: 1px solid #e5c2d9; }
+    th { background: #f9e5f0; text-align: left; font-weight: 700; }
+    td { background: #fff7fb; }
+  </style>
+</head>
+<body>
+  <h1>Withholding Calculation</h1>
+  <table>
+    <tbody>
+      ${rows.map(([label, value]) => `<tr><th>${label}</th><td>${value}</td></tr>`).join('')}
+    </tbody>
+  </table>
+</body>
+</html>`;
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    showToast('Unable to open PDF export window.');
+    return;
+  }
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 function getSavedScenarios() {
   try {
     return JSON.parse(localStorage.getItem('pastel-taxdesk-history') || '[]');
@@ -275,6 +373,28 @@ function resetForm() {
   setMode(activeMode);
   renderTaxTable(elements.tablePeriod.value);
   showToast('Form reset.');
+}
+
+function setTheme(theme) {
+  const body = document.body;
+  const isLight = theme === 'light';
+  body.classList.toggle('theme-light', isLight);
+  body.classList.toggle('theme-dark', !isLight);
+  elements.themeToggleBtn.textContent = isLight ? 'Dark pastel' : 'Light pastel';
+  elements.themeToggleBtn.setAttribute('aria-pressed', String(isLight));
+  document.querySelector('#heroTheme').textContent = isLight ? 'Light pastel pink' : 'Dark pastel pink';
+  localStorage.setItem('pastel-taxdesk-theme', theme);
+}
+
+function initTheme() {
+  const stored = localStorage.getItem('pastel-taxdesk-theme');
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  setTheme(stored === 'light' || (!stored && prefersLight) ? 'light' : 'dark');
+}
+
+function toggleTheme() {
+  const current = document.body.classList.contains('theme-light') ? 'light' : 'dark';
+  setTheme(current === 'light' ? 'dark' : 'light');
 }
 
 function loadSampleData() {
@@ -335,6 +455,9 @@ document.querySelector('#copyBtn').addEventListener('click', async () => {
   }
 });
 
+document.querySelector('#exportCsvBtn').addEventListener('click', exportToCsv);
+document.querySelector('#exportPdfBtn').addEventListener('click', exportToPdf);
+
 document.querySelector('#saveBtn').addEventListener('click', () => {
   if (!latestResult) {
     showToast('Compute first before saving.');
@@ -354,5 +477,8 @@ document.querySelector('#clearHistoryBtn').addEventListener('click', () => {
   showToast('Saved scenarios cleared.');
 });
 
+elements.themeToggleBtn.addEventListener('click', toggleTheme);
+
+initTheme();
 renderTaxTable('monthly');
 renderHistory();
