@@ -3,7 +3,7 @@
 
 - Compensation withholding tax calculator
 - Expanded withholding tax percentage calculator
-- Dark + pastel pink responsive design
+- Dark & Light + pastel pink responsive design
 - Tax computation breakdown
 - Reference tax table viewer
 - Copy result button
